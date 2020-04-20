@@ -12,7 +12,7 @@
 
         <EditText
             android:id="@+id/address_field"
-            android:layout_width="287dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:hint="Search Address" />
 
@@ -23,11 +23,25 @@
             android:layout_gravity="right"
             android:onClick="onSearch"
             android:text="Search" />
+
 </LinearLayout>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="468dp"
-        android:layout_height="694dp"
+        android:layout_height="500dp"
         tools:context=".SearchAddressMap" />
+    <Button
+        android:id="@+id/ReturnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="onReturn"
+        android:text="Done" />
+
+
+
+
+
 </LinearLayout>

@@ -1,12 +1,17 @@
 package com.example.googlemapsdonor;
 
+import androidx.annotation.IntRange;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,6 +27,7 @@ import java.util.List;
 public class SearchAddressMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    Address address ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +52,7 @@ public class SearchAddressMap extends FragmentActivity implements OnMapReadyCall
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Address address = addressList.get(0);
+            address = addressList.get(0);
             LatLng latLng = new LatLng(address.getLatitude(),address.getLongitude());
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng).title("Searched Location "));
@@ -55,6 +61,24 @@ public class SearchAddressMap extends FragmentActivity implements OnMapReadyCall
             Log.i("Longitude",Double.toString(address.getLongitude()));
         }
     }
+    public void onReturn(View view){
+        final String location [] = new String[2];
+        location [0] = Double.toString(address.getLatitude());
+        location [1] = Double.toString(address.getLongitude());
+        Button btn =(Button) findViewById(R.id.ReturnAdd);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra("latitude",Double.toString(address.getLatitude()));
+                intent.putExtra("longitude",Double.toString(address.getLongitude()));
+                setResult(Activity.RESULT_OK,intent);
+                finish();
+            }
+        });
+    }
+
+
 
 
     /**
