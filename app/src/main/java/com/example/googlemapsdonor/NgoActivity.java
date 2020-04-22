@@ -1,6 +1,7 @@
 package com.example.googlemapsdonor;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 public class NgoActivity extends AppCompatActivity {

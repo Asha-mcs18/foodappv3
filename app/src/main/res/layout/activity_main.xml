@@ -8,134 +8,38 @@
 
 
     <Button
-        android:id="@+id/curr_loc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:onClick="toMapActivity"
-        android:text="Use Current Location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_loc" />
-
-    <Button
-        android:id="@+id/search_loc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="160dp"
-        android:onClick="toSearchAddress"
-        android:text="Search Address"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/submitRequest"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:onClick="onSubmit"
-        android:text="Submit Request"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/FoodItemField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Enter Food Item"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/shelfLifeField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:onClick="toDonorActivity"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FoodItemField" />
+        app:layout_constraintTop_toBottomOf="@+id/button2"
+        android:text="Donor " />
 
-    <EditText
-        android:id="@+id/NoOfPersonsField"
+    <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="toLoginActivity"
+        android:text="Login"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shelfLifeField" />
-
-    <TextView
-        android:id="@+id/foodlabel"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+    <Button
+        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="41dp"
-        android:layout_marginTop="40dp"
-        android:text="Food Item"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/shelfLifeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="41dp"
-        android:layout_marginTop="70dp"
-        android:text="Shelf Life"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/foodlabel" />
-
-    <TextView
-        android:id="@+id/PersonsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No of Persons"
-        app:layout_constraintBaseline_toBaselineOf="@+id/NoOfPersonsField"
-        app:layout_constraintStart_toStartOf="@+id/shelfLifeLabel" />
-    <TextView
-        android:id="@+id/timeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text="Enter Time"
-        app:layout_constraintBottom_toTopOf="@+id/LocationLabel"
-        app:layout_constraintStart_toStartOf="@+id/PersonsLabel" />
-
-    <TimePicker
-        android:id="@+id/timePicker1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:timePickerMode="spinner"
-
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="30dp"
+        android:onClick="toRegisterActivity"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NoOfPersonsField"
-        app:layout_constraintBottom_toTopOf="@+id/LocationLabel"/>
-
-    <TextView
-        android:id="@+id/LocationLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:text="EnterLocation"
-        app:layout_constraintBottom_toTopOf="@+id/search_loc"
-        app:layout_constraintStart_toStartOf="@+id/PersonsLabel" />
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="16dp" />
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        android:text="Register " />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
