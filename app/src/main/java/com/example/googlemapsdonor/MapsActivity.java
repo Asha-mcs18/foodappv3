@@ -9,6 +9,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,6 +19,8 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     LocationManager locationManager;
     LocationListener locationListener;
+    Location address;
 
     @SuppressLint("MissingPermission")
     @Override
@@ -83,6 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                Toast.makeText(MapsActivity.this,location.toString(),Toast.LENGTH_SHORT).show();
 //                double lat = location.getLatitude();
 //                Log.i("location LAT",Double.toString(lat));
+                address= location;
                 LatLng userLoc = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(userLoc).title("Your Location"));
@@ -131,6 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Location lastknownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 LatLng userLoc = new LatLng(lastknownLocation.getLatitude(), lastknownLocation.getLongitude());
                 mMap.clear();
+                address= lastknownLocation;
                 mMap.addMarker(new MarkerOptions().position(userLoc).title("Your Location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLoc,15));
 
@@ -144,4 +150,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add a marker in Sydney and move the camera
 
     }
+    public void onReturn(View view){
+        final String location [] = new String[2];
+        location [0] = Double.toString(address.getLatitude());
+        location [1] = Double.toString(address.getLongitude());
+//         double location1 = address.getLatitude();
+//         double location2 = address.getLongitude();
+//      Log.i("location LAT",Double.toString(lat));
+        Button btn =(Button) findViewById(R.id.ReturnAdd);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra("latitude",location[0]);
+                intent.putExtra("longitude",location[1]);
+                setResult(Activity.RESULT_OK,intent);
+                finish();
+            }
+        });
+    }
+
 }
