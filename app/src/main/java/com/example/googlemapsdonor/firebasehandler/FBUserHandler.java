@@ -4,42 +4,162 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.googlemapsdonor.models.DataStatus;
 import com.example.googlemapsdonor.models.UserModel;
 import com.example.googlemapsdonor.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FBUserHandler {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference userRef;
     private DatabaseReference fullPath;
+    private FBUserAuthHandler userAuthHandler;
+    private DatabaseReference roleRef;
+    private DatabaseReference dbRef;
 
     public FBUserHandler(){
         firebaseDatabase = FirebaseDatabase.getInstance();
         userRef  = firebaseDatabase.getReference(Constants.USER);
+        roleRef=  firebaseDatabase.getReference(Constants.ROLE);
+        userAuthHandler = new FBUserAuthHandler();
+        dbRef = firebaseDatabase.getReference();
     }
 
     //user will call this and it will direct for auth
-    public void addUser(UserModel user){
+    public void addUser(final UserModel user,final String password, final DataStatus dataStatus ){
         fullPath = userRef.child(user.getRole());
-        if(user!=null) {
+        if(user!=null&&password!=null) {
             //check if user with same username already exist
-            fullPath.orderByChild(Constants.USER_NAME).equalTo(user.getUserName());
+            Log.d("User ADD"," User added method called from register actvity: "
+                    + fullPath.orderByChild(Constants.USER_NAME).equalTo(user.getUserName()));
+            fullPath.orderByChild(Constants.USER_NAME).equalTo(user.getUserName())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            //user with same username already exist hence error message
+                            if (dataSnapshot.getValue() != null) {
+                                dataStatus.errorOccured("User with this email address already exist");
+                                return;
+                            }
+                            else {
+                                userAuthHandler.createNewUser(user.getUserName(), password, new DataStatus() {
+                                    @Override
+                                    public void dataCreated(String userId) {
+                                        super.dataCreated(userId);
+                                        Map<String, Object> updates = new HashMap<String, Object>();
+                                        user.setUserKey(userId);
+                                        String userPathKey = "/Users/"+user.getRole()+"/"+user.getUserKey();
+                                        String rolePathKey = "/Role/"+user.getUserKey();
+                                        Log.d("add User "," user path "+userPathKey);
+                                        Log.d("add User "," role path "+rolePathKey);
+                                        updates.put(userPathKey,user);
+                                        updates.put(rolePathKey,user.getRole());
+                                        String successMessage = "User has been successfully registered. Login to continue!";
+                                        dbRef.updateChildren(updates)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("add user","user key is "+user.getUserKey());
+                                                        dataStatus.dataCreated("User registered successfully!!!");
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    String errorMessage = "ERROR OCCURED WHILE CREATING YOUR ACCOUNT. PLEASE TRY AGAIN LATER";
+                                                    Log.d("add User ",e.getMessage());
+                                                    dataStatus.errorOccured(e.getMessage());
+                                                }
+                                                });
+                                        }
+                                    @Override
+                                    public void errorOccured(String message) {
+                                        Log.d("ADD USER",message);
+                                        dataStatus.errorOccured(message);
+                                    }
+                                });
+                            }
+                        }
+/*
+   //FirebaseUser currentUser = (FirebaseUser) object;
+                                //UserModel userModel = new UserModel(user.getUserKey(),user.getUserName(), user.getRole(),user.getMobileNo());
 
+                        //String userKey = userRef.push().getKey();
+                        //fullPath.child(userKey).setValue(user);
+                        //String roleKey =  roleRef.push().getKey();
+                        //Map<String,String> userRole = new HashMap<String, String>();
+                        //userRole.put(user.getUserName(),user.getRole());
+                        //roleRef.child(user.getUserName()).setValue(user.getRole());
 
+                }*/
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    String message = "Some Error occurred creating account! Please try again later";
+                    Log.d("ADD USER",message);
+                    dataStatus.errorOccured(message);
+                    return;
+                }
+            });
 
-            String key = userRef.push().getKey();
-            user.setUserKey(key);
-            fullPath.child(key).setValue(user);
-            Log.d("add user","user key is "+user.getUserKey());
         }
     }
 
-    public void readUser(final String userKey,final String role){
-        fullPath = userRef.child(role);
+    public void readUser(final String userName, final String password, final DataStatus activityDataStatus){
+        userAuthHandler.signInUser(userName, password,new DataStatus(){
+            @Override
+            public void dataLoaded(final String currentUserId) {
+                super.dataLoaded(currentUserId);
+                roleRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String role = dataSnapshot.getValue(String.class);
+                        Log.d("User Handler","Values inside datasnapshot is "+dataSnapshot.toString());
+                        Log.d("User Handler","Inside read user role is "+role);
+                        if(role!=null){
+                            //read details of user
+                            userRef.child(role).child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    UserModel userLoggedIn = dataSnapshot.getValue(UserModel.class);
+                                    Log.d("AUTH HANDLER",userLoggedIn.getUserName());
+                                    activityDataStatus.dataLoaded(userLoggedIn);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.d("USER AUTH HANDLER",databaseError.getMessage());
+                                    activityDataStatus.errorOccured(databaseError.getMessage());
+                                }
+                            });
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("USER AUTH HANDLER",databaseError.getMessage());
+                        activityDataStatus.errorOccured(databaseError.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void errorOccured(String message) {
+                Log.d("USER AUTH HANDLER",message);
+                activityDataStatus.errorOccured(message);
+            }
+        });
+        /*fullPath = userRef.child(role);
         fullPath.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -53,7 +173,7 @@ public class FBUserHandler {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d("read user","error reading user");
             }
-        });
+        });*/
     }
 
     public void updateUser(final UserModel updatedUser){
