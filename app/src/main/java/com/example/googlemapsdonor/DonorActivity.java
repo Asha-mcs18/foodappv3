@@ -19,12 +19,12 @@ public class DonorActivity extends AppCompatActivity {
     String latitude;
     String longitude;
     TimePicker picker;
-    public void toMapActivity(View view){
+    /*public void toMapActivity(View view){
         Intent intent = new Intent(getApplicationContext(),MapsActivity.class);
 //     startActivity(intent);
         startActivityForResult(intent , REQUEST_CODE_GETMESSAGE);
 
-    }
+    }*/
     public void toSearchAddress(View view){
         Intent intent = new Intent(getApplicationContext(),SearchAddressMap.class);
 //     startActivity(intent);
@@ -52,12 +52,12 @@ public class DonorActivity extends AppCompatActivity {
         picker=(TimePicker)findViewById(R.id.timePicker1);
         final String hours = Integer.toString(picker.getHour());
         final String minutes = Integer.toString(picker.getMinute());
-//     Log.i("ALL FOOD DETAILS","ENTERED BY DONOR");
-//     Log.i("FOOD ITEM", foodItem.getText().toString());
-//     Log.i("SHELF LIFE", shelfLife.getText().toString());
-//     Log.i("NO OF PERSONS",noOfPersons.getText().toString());
-//     Log.i("LATITUDE ", latitude);
-//     Log.i("LONGITUDE ", longitude);
+     Log.i("ALL FOOD DETAILS","ENTERED BY DONOR");
+     Log.i("FOOD ITEM", foodItem.getText().toString());
+     Log.i("SHELF LIFE", shelfLife.getText().toString());
+     Log.i("NO OF PERSONS",noOfPersons.getText().toString());
+     Log.i("LATITUDE ", latitude);
+     Log.i("LONGITUDE ", longitude);
 
 //     startActivityForResult(intent , REQUEST_CODE_GETMESSAGE);
 
@@ -81,7 +81,10 @@ public class DonorActivity extends AppCompatActivity {
         });
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5406baa731f0b4bf62206d8e0700ef99b0d637d2
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
