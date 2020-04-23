@@ -15,11 +15,15 @@
     android:layout_width="468dp"
     android:layout_height="600dp"
     tools:context=".MapsActivity" />
-<Button
-android:id="@+id/ReturnAdd"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:layout_gravity="center"
-android:onClick="onReturn"
-android:text="Done" />
+
+   <Button
+       android:id="@+id/ReturnAdd"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center"
+       android:background="@drawable/submit_btn"
+       android:fontFamily="@font/bubblegum_sans"
+       android:onClick="onReturn"
+       android:text="Done"
+       android:textColor="#F8F5F5" />
    </LinearLayout>

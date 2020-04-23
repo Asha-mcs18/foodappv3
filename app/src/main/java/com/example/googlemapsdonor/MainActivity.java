@@ -27,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
         startActivity(intent);
     }
+    public void toNGOActivity(View view){
+        Intent intent = new Intent(getApplicationContext(),NgoActivity.class);
+        startActivity(intent);
+    }
 
 
     @Override

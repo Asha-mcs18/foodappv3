@@ -82,16 +82,6 @@ public class DonorActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
