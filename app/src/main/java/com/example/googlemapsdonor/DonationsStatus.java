@@ -45,8 +45,8 @@ public class DonationsStatus extends AppCompatActivity {
         Log.i("NO OF PERSONS",noOfPersons);
         Log.i("LATITUDE ", latitude);
         Log.i("LONGITUDE ", longitude);
-        Log.i("HOURS",hours);
-        Log.i("MINUTES",minutes);
+//        Log.i("HOURS",hours);
+//        Log.i("MINUTES",minutes);
 
         notificationManager = NotificationManagerCompat.from(this);
 //        sendNotification();
