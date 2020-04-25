@@ -2,20 +2,28 @@ package com.example.googlemapsdonor;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+
+import static com.example.googlemapsdonor.utils.Notifications.CHANNEL_1_ID;
 
 public class DonationsStatus extends AppCompatActivity {
 
     public static final int REQUEST_CODE_GETMESSAGE = 1014;
+    private NotificationManagerCompat notificationManager;
 //    String latitude;
 //    String longitude;
 //    String foodItem;
 //    String shelfLife;
 //    String noOfPersons;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +45,32 @@ public class DonationsStatus extends AppCompatActivity {
         Log.i("NO OF PERSONS",noOfPersons);
         Log.i("LATITUDE ", latitude);
         Log.i("LONGITUDE ", longitude);
-        Log.i("HOURS",hours);
-        Log.i("MINUTES",minutes);
+//        Log.i("HOURS",hours);
+//        Log.i("MINUTES",minutes);
+
+        notificationManager = NotificationManagerCompat.from(this);
+//        sendNotification();
+    }
+/* Check for donation isAccepted*/
+//    if (){
+//        sendNotification();
+//    }
+    public void sendNotification() {
+        String title = "Your Donation Accepted";
+        String message = "Your donation is accepted by NGO";
+        Log.i("onsend","onsend");
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.ic_message_black)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+
+        notificationManager.notify(1, notification);
+        Intent intent = new Intent(getApplicationContext(),NgoActivity.class);
+        startActivity(intent);
     }
 
 }

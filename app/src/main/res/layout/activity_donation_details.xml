@@ -184,6 +184,7 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/submit_btn"
         android:fontFamily="@font/bubblegum_sans"
+        android:onClick="sendNotification"
         android:text="Accept Request"
         android:textColor="#F4F4F4"
         android:textStyle="bold"
