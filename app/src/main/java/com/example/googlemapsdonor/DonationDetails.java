@@ -55,6 +55,32 @@ public class DonationDetails extends AppCompatActivity {
         TextView donorCon = (TextView) findViewById(R.id.donorContactField);
         donorCon.setText(donorContact);
 
+<<<<<<< HEAD
+=======
+        btnAccept = findViewById(R.id.acceptBtn);
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = "This is notification";
+                NotificationCompat.Builder builder =
+                        new NotificationCompat.Builder(DonationDetails.this,CHANNEL_ID)
+                                . setSmallIcon(R.drawable.ic_message_black)
+                        .setContentTitle("New Notification")
+                        .setContentText(message)
+                        .setAutoCancel(true);
+                Intent intent = new Intent(getApplicationContext(),NgoNotify.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("message",message);
+                PendingIntent pendingIntent = PendingIntent.getActivity(DonationDetails.this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                builder.setContentIntent(pendingIntent);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(DonationDetails.this);
+              //  NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManagerCompat.notify(0,builder.build());
+            }
+        });
+>>>>>>> 99f4e58c6928f12e0432b4d1dc5b3514fc8d939d
 
 
         notificationManager = NotificationManagerCompat.from(this);

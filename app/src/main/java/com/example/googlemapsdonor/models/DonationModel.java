@@ -1,6 +1,8 @@
 package com.example.googlemapsdonor.models;
 
-public class DonationModel {
+import java.io.Serializable;
+
+public class DonationModel implements Serializable {
     private String key;
     private String ngoKey;
     private String donorKey;
@@ -81,5 +83,19 @@ public class DonationModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "DonationModel{" +
+                "key='" + key + '\'' +
+                ", ngoKey='" + ngoKey + '\'' +
+                ", donorKey='" + donorKey + '\'' +
+                ", pickUpLocationKey='" + pickUpLocationKey + '\'' +
+                ", ngoLocationKey='" + ngoLocationKey + '\'' +
+                ", donorLocationKey='" + donorLocationKey + '\'' +
+                ", foodKey='" + foodKey + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

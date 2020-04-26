@@ -4,8 +4,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.googlemapsdonor.models.DataStatus;
+import com.example.googlemapsdonor.models.DonationListModel;
 import com.example.googlemapsdonor.models.DonationModel;
 import com.example.googlemapsdonor.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -13,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +32,10 @@ public class FBDonationHandler {
         firebaseDatabase = FirebaseDatabase.getInstance();
         donationRef = firebaseDatabase.getReference(Constants.DONATION);
         donations  = new ArrayList<DonationModel>();
-
     }
 
     //done
-    public void readDonations(){
+    public void readDonations(final DataStatus dataStatus){
         donationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -40,8 +44,9 @@ public class FBDonationHandler {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     if(ds!=null){
                         String key = ds.getKey();
-                        DonationModel donationModel= ds.getValue(DonationModel.class);
+                        DonationModel donationModel= ds.getValue(DonationListModel.class);
                         keys.add(key);
+                        //donations.add(donationModel);
                         if(donationModel.getStatus()!=null&&donationModel.getStatus().equals(Constants.NOT_ACCEPTED_YET)) {
                             donations.add(donationModel);
                             Log.d("read donations", "donation key" + donationModel.getKey());
@@ -49,17 +54,22 @@ public class FBDonationHandler {
                         }
                     }
                 }
+                Log.d("read donations", "Outside donation handler for" + donations.size());
+//                for (DonationModel dm:donations) {
+//                    Log.d("For each loop",dm.getDonorKey());
+//                }
+                dataStatus.dataLoaded(donations);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d("read donations", "Some problem occured fetching list");
+                dataStatus.errorOccured(databaseError.getMessage());
             }
         });
     }
 
     //done
-    public void newDonation(DonationModel donationModel){
+    public void newDonation(final DonationModel donationModel, final DataStatus dataStatus){
         String donorKey = donationModel.getDonorKey();
         String pickUpLocationKey = donationModel.getPickUpLocationKey();
         String foodKey= donationModel.getFoodKey();
@@ -67,8 +77,21 @@ public class FBDonationHandler {
             String key = donationRef.push().getKey();
             donationModel.setKey(key);
             donationModel.setStatus(Constants.NOT_ACCEPTED_YET);
-            donationRef.child(key).setValue(donationModel);
-            Log.d("New Donation","New donation added at key"+key);
+            donationRef.child(key).setValue(donationModel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("New Donation","New donation added at key"+donationModel.getKey());
+                            dataStatus.dataCreated(donationModel);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("New Donation","New donation Failure"+e.getMessage());
+                            dataStatus.errorOccured("New donation Failure"+e.getMessage());
+                        }
+                    });
         }
     }
 

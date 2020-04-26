@@ -4,8 +4,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.googlemapsdonor.models.DataStatus;
 import com.example.googlemapsdonor.models.FoodModel;
 import com.example.googlemapsdonor.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,13 +26,27 @@ public class FBFoodHandler {
     }
 
     //done
-    public void addFood(FoodModel foodModel){
+    public void addFood(final FoodModel foodModel, final DataStatus dataStatus){
         Log.d("add Food","Inside function");
         if(foodModel!=null){
             String key =  foodRef.push().getKey();
             foodModel.setFoodKey(key);
-            foodRef.child(key).setValue(foodModel);
-            Log.d("Add Food","food added succesfully!! "+foodModel.getFoodKey());
+            foodRef.child(key).setValue(foodModel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Add Food","food added succesfully!! "+foodModel.getFoodKey());
+                            dataStatus.dataCreated(foodModel.getFoodKey());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                            Log.d("Add Food","food failure!! "+e.getMessage());
+                            dataStatus.errorOccured(e.getMessage());
+                        }
+                    });
         }
     }
 
@@ -62,18 +79,20 @@ public class FBFoodHandler {
         //}
     }
 
-    public void getFoodItem(String key){
+    public void getFoodItem(String key, final DataStatus dataStatus){
         fullPathRef = foodRef.child(key);
         fullPathRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot){
                 food = dataSnapshot.getValue(FoodModel.class);
                 // call back here only
-                Log.d("get fFood Item","food item is "+food.getFoodKey());
+                 Log.d("get fFood Item","food item is "+food.getFoodKey());
+                dataStatus.dataLoaded(food);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d("get fFood Item",databaseError.getMessage());
+                dataStatus.errorOccured(databaseError.getMessage());
             }
         });
     }
