@@ -4,8 +4,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.googlemapsdonor.models.DataStatus;
 import com.example.googlemapsdonor.models.LocationModel;
 import com.example.googlemapsdonor.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -75,7 +78,7 @@ public class FBLocationHandler {
     }
 
     //done
-    public void addLocation(LocationModel locationModel ,String typeOfLocation){
+    public void addLocation(final LocationModel locationModel , String typeOfLocation, final DataStatus dataStatus){
         fullPathRef =null;
         fullPathRef = locRef.child(typeOfLocation);
         String key= fullPathRef.push().getKey();
@@ -83,8 +86,21 @@ public class FBLocationHandler {
         if(typeOfLocation.equals(Constants.PICKUP_LOCATION)){
             locationModel.setStatus(true);
         }
-        fullPathRef.child(key).setValue(locationModel);
-        Log.d("Location added","Location added at key"+locationModel.getLocationKey());
+        fullPathRef.child(key).setValue(locationModel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Location added","Location added at key"+locationModel.getLocationKey());
+                            dataStatus.dataCreated(locationModel.getLocationKey());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("Location added","Location failure"+e.getMessage());
+                            dataStatus.errorOccured(e.getMessage());
+                        }
+                    });
     }
 
     //check

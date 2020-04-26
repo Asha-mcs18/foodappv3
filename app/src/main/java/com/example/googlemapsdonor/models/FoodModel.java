@@ -47,4 +47,14 @@ public class FoodModel {
     public void setNoOfPersons(int noOfPersons) {
         this.noOfPersons = noOfPersons;
     }
+
+    @Override
+    public String toString() {
+        return "FoodModel{" +
+                "foodItem='" + foodItem + '\'' +
+                ", shelfLife=" + shelfLife +
+                ", foodKey='" + foodKey + '\'' +
+                ", noOfPersons=" + noOfPersons +
+                '}';
+    }
 }
